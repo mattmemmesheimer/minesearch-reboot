@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MineSearch.Wpf.Converters;
+using MineSearch.Common.Converters;
 
-namespace MineSearch.Wpf.Test.ConverterTests
+namespace MineSearch.Common.Test.ConverterTests
 {
     [TestClass]
     public class AdjacentMineCountToStringConverterTest

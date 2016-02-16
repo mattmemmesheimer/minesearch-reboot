@@ -35,6 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -50,6 +52,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ConverterTests\AdjacentMineCountToStringConverterTest.cs" />
+    <Compile Include="ConverterTests\InverseBooleanToVisibilityConverterTest.cs" />
     <Compile Include="MatrixTest.cs" />
     <Compile Include="DeterminatePointGeneratorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -25,7 +25,7 @@ namespace DigitalDisplay.Wpf
         /// Value dependency property.
         /// </summary>
         public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register("Value", typeof (uint), typeof (DigitalDisplayView),
+            DependencyProperty.Register("Value", typeof (int), typeof (DigitalDisplayView),
                 new PropertyMetadata(OnValueChanged));
 
         #endregion
@@ -35,23 +35,43 @@ namespace DigitalDisplay.Wpf
         /// <summary>
         /// Value to display.
         /// </summary>
-        public uint Value
+        public int Value
         {
-            get { return (uint) GetValue(ValueProperty); }
+            get { return (int) GetValue(ValueProperty); }
             set
             {
-                if (value > _maxValue)
-                {
-                    value = _maxValue;
-                }
+                // Clamp the value
+                value = Math.Max(_minValue, Math.Min(value, _maxValue));
 
                 SetValue(ValueProperty, value);
 
-                var valueString = value.ToString(_digitsFormat);
-                for (int i = 0; i < Digits; i++)
+                // Negative
+                if (value < 0)
                 {
-                    var digit = uint.Parse(valueString.Substring(i, 1));
-                    DigitViewModels[i].Value = digit;
+                    // Create the string with the appropriate leading zeros
+                    var valueString = value.ToString(string.Format("D{0}", _digits - 1));
+                    DigitViewModels[0].MinusSign = true;
+                    // Skip over the minus sign
+                    for (int i = 1; i < Digits; i++)
+                    {
+                        var digit = uint.Parse(valueString.Substring(i, 1));
+                        // Always reset the minus sign flag if setting an actual value
+                        DigitViewModels[i].MinusSign = false;
+                        DigitViewModels[i].Value = digit;
+                    }
+                }
+                // Positive
+                else
+                {
+                    // Create the string with the appropriate leading zeros
+                    var valueString = value.ToString(string.Format("D{0}", _digits));
+                    for (int i = 0; i < Digits; i++)
+                    {
+                        var digit = uint.Parse(valueString.Substring(i, 1));
+                        // Always reset the minus sign flag if setting an actual value
+                        DigitViewModels[i].MinusSign = false;
+                        DigitViewModels[i].Value = digit;
+                    }
                 }
             }
         }
@@ -73,10 +93,10 @@ namespace DigitalDisplay.Wpf
                     }
 
                     _digits = value;
-                    // Create the format string to achieve the correct number of leading zeros.
-                    _digitsFormat = string.Format("D{0}", _digits);
+                    // Calculate the min value we can have (one less digit due to the minus sign).
+                    _minValue = - (((int)Math.Pow(10, _digits - 1)) - 1);
                     // Calculate the max value we can have.
-                    _maxValue = ((uint)Math.Pow(10, _digits)) - 1;
+                    _maxValue = ((int)Math.Pow(10, _digits)) - 1;
                     // Create a view model for each digit.
                     DigitViewModels.Clear();
                     for (int i = 0; i < _digits; i++)
@@ -111,14 +131,14 @@ namespace DigitalDisplay.Wpf
             {
                 return;
             }
-            control.Value = (uint) e.NewValue;
+            control.Value = (int) e.NewValue;
         }
 
         #region Fields
 
         private uint _digits;
-        private string _digitsFormat;
-        private uint _maxValue;
+        private int _minValue;
+        private int _maxValue;
 
         #endregion
     }

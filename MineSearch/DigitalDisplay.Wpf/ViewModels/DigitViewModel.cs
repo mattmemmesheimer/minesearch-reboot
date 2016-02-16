@@ -32,6 +32,23 @@ namespace DigitalDisplay.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Whether or not this is a minus sign.
+        /// </summary>
+        /// <remarks>If this is true, value will be ignored.</remarks>
+        public bool MinusSign
+        {
+            get { return _minusSign; }
+            set
+            {
+                if (value != _minusSign)
+                {
+                    _minusSign = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -40,11 +57,13 @@ namespace DigitalDisplay.Wpf.ViewModels
         public DigitViewModel()
         {
             Value = 0;
+            MinusSign = false;
         }
 
         #region Fields
 
         private uint _value;
+        private bool _minusSign;
 
         #endregion
     }

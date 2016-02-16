@@ -95,11 +95,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="Converters\AdjacentMineCountToColorConverter.cs" />
-    <Compile Include="Converters\AdjacentMineCountToStringConverter.cs" />
-    <Compile Include="Converters\ExplosionSourceToColorConverter.cs" />
     <Compile Include="Converters\GameStatusToIconConverter.cs" />
-    <Compile Include="Converters\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Views\Windows\BaseWindow.cs" />
     <Compile Include="Models\DefaultGameSettings.cs" />
     <Compile Include="Models\GameStatus.cs" />
