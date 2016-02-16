@@ -61,7 +61,7 @@ namespace MineSearch.Game.Test
         }
 
         [TestMethod]
-        public void TesRemoveQuestionable()
+        public void TestRemoveQuestionable()
         {
             var cellToMark = _game.Cells.First(cell => cell is MineCell);
             _game.MarkCellQuestionable(cellToMark.Coordinates);
@@ -107,50 +107,34 @@ namespace MineSearch.Game.Test
         }
 
         [TestMethod]
-        public void TestRemainingFlagCount()
+        public void TestRemainingMineCount()
         {
             int expectedFlagCount = _game.MineCount;
-            Assert.AreEqual(expectedFlagCount, _game.RemainingFlagCount);
+            Assert.AreEqual(expectedFlagCount, _game.RemainingMineCount);
 
             var safeCoordinates = _game.Cells.
                     Where(cell => cell is SafeCell).
                     Select(cell => cell.Coordinates).
-                    Take(_game.MineCount).
                     ToList();
+            
             // Flag safe cells
             foreach (var coordinate in safeCoordinates)
             {
                 _game.FlagCell(coordinate);
                 expectedFlagCount--;
-                Assert.AreEqual(expectedFlagCount, _game.RemainingFlagCount);
+                Assert.AreEqual(expectedFlagCount, _game.RemainingMineCount);
             }
-            Assert.AreEqual(0, expectedFlagCount);
-            Assert.AreEqual(0, _game.RemainingFlagCount);
+
             // Remove flags
             foreach (var coordinate in safeCoordinates)
             {
                 _game.RemoveFlag(coordinate);
                 expectedFlagCount++;
-                Assert.AreEqual(expectedFlagCount, _game.RemainingFlagCount);
+                Assert.AreEqual(expectedFlagCount, _game.RemainingMineCount);
             }
-            Assert.AreEqual(_game.MineCount, expectedFlagCount);
-            Assert.AreEqual(_game.MineCount, _game.RemainingFlagCount);
-        }
 
-        [TestMethod]
-        public void TestFlagLimit()
-        {
-            int flagLimit = _game.MineCount;
-            // Exhaust flags
-            for (int i = 0; i < flagLimit; i++)
-            {
-                var point = Point.FromIndex(i, _game.Columns);
-                bool flagged = _game.FlagCell(point);
-                Assert.IsTrue(flagged);
-            }
-            // Ensure we cannot flag any more cells
-            var unflaggedCell = _game.Cells.First(cell => !cell.Flagged);
-            Assert.IsFalse(_game.FlagCell(unflaggedCell.Coordinates));
+            Assert.AreEqual(_game.MineCount, expectedFlagCount);
+            Assert.AreEqual(_game.MineCount, _game.RemainingMineCount);
         }
 
         [TestMethod]

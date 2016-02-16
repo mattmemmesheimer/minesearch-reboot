@@ -28,16 +28,16 @@ namespace MineSearch.Game
         public int MineCount { get { return Cells.Count(cell => cell is MineCell); } }
 
         /// <summary>
-        /// Number of flags remaining.
+        /// Number of mines remaining.
         /// </summary>
-        public int RemainingFlagCount
+        public int RemainingMineCount
         {
-            get { return _remainingFlagCount; }
+            get { return _remainingMineCount; }
             private set
             {
-                if (value != _remainingFlagCount)
+                if (value != _remainingMineCount)
                 {
-                    _remainingFlagCount = value;
+                    _remainingMineCount = value;
                     OnPropertyChanged();
                 }
             }
@@ -80,7 +80,7 @@ namespace MineSearch.Game
         {
             var cellsFactory = new MineSearchCellsFactory(gameSettings);
             Cells = cellsFactory.CreateCells();
-            RemainingFlagCount = gameSettings.MineCount;
+            RemainingMineCount = gameSettings.MineCount;
             _remainingCellsToReveal = Cells.Count(cell => cell is SafeCell);
         }
 
@@ -96,10 +96,10 @@ namespace MineSearch.Game
             {
                 return false;
             }
-            if (!cell.Revealed && !cell.Flagged && RemainingFlagCount > 0)
+            if (!cell.Revealed && !cell.Flagged)
             {
                 cell.Flagged = true;
-                RemainingFlagCount--;
+                RemainingMineCount--;
                 return true;
             }
             return false;
@@ -114,7 +114,7 @@ namespace MineSearch.Game
             var cell = Cells[point.X, point.Y];
             if (cell != null && cell.Flagged)
             {
-                RemainingFlagCount++;
+                RemainingMineCount++;
                 cell.Flagged = false;
             }
         }
@@ -155,12 +155,17 @@ namespace MineSearch.Game
             if (cell != null && !cell.Revealed && !cell.Flagged)
             {
                 cell.Revealed = true;
-                if (!GameOver && cell is MineCell)
+                // Is it a Mine cell?
+                if (cell is MineCell)
                 {
-                    var mineCell = cell as MineCell;
-                    mineCell.ExplosionSource = true;
-                    GameOver = true;
+                    if (!GameOver)
+                    {
+                        var mineCell = cell as MineCell;
+                        mineCell.ExplosionSource = true;
+                        GameOver = true;
+                    }
                 }
+                // Otherwise must be a Safe cell
                 else
                 {
                     _remainingCellsToReveal--;
@@ -207,7 +212,7 @@ namespace MineSearch.Game
         #region Fields
 
         private bool _gameOver;
-        private int _remainingFlagCount;
+        private int _remainingMineCount;
         private int _remainingCellsToReveal;
 
         #endregion

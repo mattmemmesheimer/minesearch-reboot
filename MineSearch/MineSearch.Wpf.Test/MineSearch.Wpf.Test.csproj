@@ -97,8 +97,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ConverterTests\InverseBooleanToVisibilityConverterTest.cs" />
-    <Compile Include="ConverterTests\AdjacentMineCountToStringConverterTest.cs" />
     <Compile Include="ViewModelTests\CellViewModelTest.cs" />
     <Compile Include="ViewModelTests\MainWindowViewModelTest.cs" />
     <Compile Include="ViewModelTests\MineSearchGameViewModelTest.cs" />

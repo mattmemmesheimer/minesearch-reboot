@@ -4,13 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:DigitalDisplay.Wpf.Converters"
+             xmlns:commonConverters="clr-namespace:MineSearch.Common.Converters;assembly=MineSearch.Common"
              mc:Ignorable="d" 
              d:DesignHeight="44" d:DesignWidth="22">
     <Grid>
         <Grid.Resources>
             <converters:ValueToDigitTemplateConverter x:Key="ValueToDigitTemplateConverter" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <commonConverters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
         </Grid.Resources>
+        <!-- Minus Sign -->
         <ContentControl 
+            Visibility="{Binding MinusSign, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Template="{StaticResource MinusSign}" />
+        <!-- Digit -->
+        <ContentControl 
+            Visibility="{Binding MinusSign, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
             Template="{Binding Value, Converter={StaticResource ValueToDigitTemplateConverter}}" />
     </Grid>
 </UserControl>
