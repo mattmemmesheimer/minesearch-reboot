@@ -15,6 +15,22 @@ namespace MineSearch.Wpf.Models
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Whether or not this setting is selected.
+        /// </summary>
+        public bool Selected
+        {
+            get { return _selected; }
+            set
+            {
+                if (value != _selected)
+                {
+                    _selected = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -36,5 +52,11 @@ namespace MineSearch.Wpf.Models
         public GameSetting(IGameSettings rhs) : base(rhs)
         {
         }
+
+        #region Fields
+
+        private bool _selected;
+
+        #endregion
     }
 }
