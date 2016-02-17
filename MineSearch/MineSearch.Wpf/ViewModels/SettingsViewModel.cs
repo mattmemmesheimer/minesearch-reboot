@@ -87,7 +87,6 @@ namespace MineSearch.Wpf.ViewModels
 
         private void Save()
         {
-            SelectedGameSetting = DefaultGameSettings.First(setting => setting.Selected);
             Saved = true;
             FinishInteraction();
         }
@@ -105,6 +104,7 @@ namespace MineSearch.Wpf.ViewModels
                 gameSetting.Selected = false;
             }
             setting.Selected = true;
+            SelectedGameSetting = setting;
         }
     }
 }
