@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
 using MineSearch.Common.ViewModels;
@@ -11,6 +12,11 @@ namespace MineSearch.Wpf.ViewModels
     public class SettingsViewModel : ViewModelBase, INotification, IInteractionRequestAware
     {
         #region Commands
+
+        /// <summary>
+        /// Select game setting command.
+        /// </summary>
+        public ICommand SelectGameSettingCommand { get; private set; }
 
         /// <summary>
         /// Save command.
@@ -45,14 +51,7 @@ namespace MineSearch.Wpf.ViewModels
         /// <summary>
         /// Game settings.
         /// </summary>
-        public IGameSettings GameSettings
-        {
-            get { return _gameSettings; }
-            set
-            {
-                _gameSettings = new GameSettings(value);
-            }
-        }
+        public IGameSettings SelectedGameSetting { get; private set; }
 
         /// <summary>
         /// An <see cref="T:System.Action"/> that can be invoked to finish the interaction.
@@ -83,10 +82,12 @@ namespace MineSearch.Wpf.ViewModels
 
             SaveCommand = new DelegateCommand(Save);
             CancelCommand = new DelegateCommand(Cancel);
+            SelectGameSettingCommand = new DelegateCommand<GameSetting>(SelectGameSetting);
         }
 
         private void Save()
         {
+            SelectedGameSetting = DefaultGameSettings.First(setting => setting.Selected);
             Saved = true;
             FinishInteraction();
         }
@@ -97,10 +98,13 @@ namespace MineSearch.Wpf.ViewModels
             FinishInteraction();
         }
 
-        #region Fields
-
-        private IGameSettings _gameSettings;
-
-        #endregion
+        private void SelectGameSetting(GameSetting setting)
+        {
+            foreach (var gameSetting in DefaultGameSettings)
+            {
+                gameSetting.Selected = false;
+            }
+            setting.Selected = true;
+        }
     }
 }
