@@ -100,6 +100,10 @@
     <Compile Include="Converters\ExplosionSourceToColorConverter.cs" />
     <Compile Include="Converters\GameStatusToIconConverter.cs" />
     <Compile Include="Converters\InverseBooleanToVisibilityConverter.cs" />
+    <Compile Include="Models\GameSetting.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\GameSettingsCollection.cs" />
     <Compile Include="Views\Windows\BaseWindow.cs" />
     <Compile Include="Models\DefaultGameSettings.cs" />
     <Compile Include="Models\GameStatus.cs" />

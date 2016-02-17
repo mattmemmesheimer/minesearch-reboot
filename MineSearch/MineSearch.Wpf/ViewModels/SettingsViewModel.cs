@@ -3,6 +3,7 @@ using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
 using MineSearch.Common.ViewModels;
 using MineSearch.Game;
+using MineSearch.Wpf.Models;
 using Prism.Interactivity.InteractionRequest;
 
 namespace MineSearch.Wpf.ViewModels
@@ -63,14 +64,23 @@ namespace MineSearch.Wpf.ViewModels
         /// </summary>
         public bool Saved { get; set; }
 
+        /// <summary>
+        /// Default game settings.
+        /// </summary>
+        public DefaultGameSettings DefaultGameSettings { get; private set; } 
+
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
-        public SettingsViewModel()
+        /// <param name="defaultGameSettings">Default game settings.</param>
+        public SettingsViewModel(DefaultGameSettings defaultGameSettings)
         {
             Content = Title = "";
+
+            DefaultGameSettings = defaultGameSettings;
+
             SaveCommand = new DelegateCommand(Save);
             CancelCommand = new DelegateCommand(Cancel);
         }

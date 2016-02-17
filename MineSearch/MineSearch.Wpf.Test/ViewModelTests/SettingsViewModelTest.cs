@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MineSearch.Common;
 using MineSearch.Game;
+using MineSearch.Wpf.Models;
 using MineSearch.Wpf.ViewModels;
 
 namespace MineSearch.Wpf.Test.ViewModelTests
@@ -11,11 +12,7 @@ namespace MineSearch.Wpf.Test.ViewModelTests
         [TestMethod]
         public void TestSave()
         {
-            var gameSettings = new GameSettings(2, 2, 1, new RandomPointGenerator());
-            var viewModel = new SettingsViewModel
-            {
-                GameSettings = gameSettings
-            };
+            var viewModel = new SettingsViewModel(new DefaultGameSettings());
             viewModel.SaveCommand.Execute(null);
             Assert.IsTrue(viewModel.Saved);
         }
@@ -23,11 +20,7 @@ namespace MineSearch.Wpf.Test.ViewModelTests
         [TestMethod]
         public void TestCancel()
         {
-            var gameSettings = new GameSettings(2, 2, 1, new RandomPointGenerator());
-            var viewModel = new SettingsViewModel
-            {
-                GameSettings = gameSettings
-            };
+            var viewModel = new SettingsViewModel(new DefaultGameSettings());
             viewModel.CancelCommand.Execute(null);
             Assert.IsFalse(viewModel.Saved);
         }

@@ -1,6 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.Linq;
+using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
-using MineSearch.Common;
 using MineSearch.Common.ViewModels;
 using MineSearch.Wpf.Models;
 using Prism.Interactivity.InteractionRequest;
@@ -36,18 +36,23 @@ namespace MineSearch.Wpf.ViewModels
         /// <summary>
         /// Settings dialog request.
         /// </summary>
-        public InteractionRequest<SettingsViewModel> SettingsRequest { get; private set; } 
+        public InteractionRequest<SettingsViewModel> SettingsRequest { get; private set; }
+
+        // ReSharper disable once CollectionNeverUpdated.Global
+        public DefaultGameSettings DefaultGameSettings { get; private set; }
 
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
         /// </summary>
-        /// <param name="pointGenerator">Point generator to use when creating mine cells.</param>
-        public MainWindowViewModel(IPointGenerator pointGenerator)
+        public MainWindowViewModel()
         {
-            var defaultSettings = new DefaultGameSettings(pointGenerator);
-            GameViewModel = new MineSearchGameViewModel(defaultSettings);
+            // Create the default game settings
+            DefaultGameSettings = new DefaultGameSettings();
+            // Use the first game setting
+            GameViewModel = new MineSearchGameViewModel(DefaultGameSettings.First());
+
             SettingsRequest = new InteractionRequest<SettingsViewModel>();
             SettingsCommand = new DelegateCommand(RaiseSettingsRequest);
             ExitCommand = new DelegateCommand<IBaseWindow>(CloseWindow);
@@ -55,10 +60,7 @@ namespace MineSearch.Wpf.ViewModels
 
         private void RaiseSettingsRequest()
         {
-            var settingsViewModel = new SettingsViewModel
-            {
-                GameSettings = GameViewModel.GameSettings
-            };
+            var settingsViewModel = new SettingsViewModel(DefaultGameSettings);
             SettingsRequest.Raise(settingsViewModel, result =>
             {
                 if (result.Saved)
