@@ -6,7 +6,7 @@ namespace MineSearch.Game
     /// <summary>
     /// Concrete implementation of <see cref="IGameSettings"/>.
     /// </summary>
-    public class GameSettings : IGameSettings
+    public class GameSettings : ModelBase, IGameSettings
     {
         /// <summary>
         /// Number of rows.
