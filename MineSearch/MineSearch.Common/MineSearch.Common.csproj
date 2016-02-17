@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasePointGenerator.cs" />
+    <Compile Include="Models\ModelBase.cs" />
     <Compile Include="RandomPointGenerator.cs" />
     <Compile Include="IMatrix.cs" />
     <Compile Include="IPointGenerator.cs" />
