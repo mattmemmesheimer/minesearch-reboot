@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              Name="SettingsWindow"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Margin="5">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
@@ -22,12 +22,45 @@
                 <ItemsControl ItemsSource="{Binding DefaultGameSettings}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="models:GameSetting">
-                            <Grid>
+                            <Grid Height="60">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
                                 <RadioButton 
+                                    Grid.Column="0"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    Margin="2"
                                     IsChecked="{Binding Selected, Mode=TwoWay}"
                                     Command="{Binding ElementName=SettingsWindow, Path=ViewModel.SelectGameSettingCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="{Binding Name}" />
+                                    CommandParameter="{Binding}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Grid.Row="0"
+                                    Text="{Binding Name}">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding
+                                            MouseAction="LeftClick" 
+                                            Command="{Binding ElementName=SettingsWindow, Path=ViewModel.SelectGameSettingCommand}"
+                                            CommandParameter="{Binding}" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Grid.Row="1">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}X{1}, {2} mines">
+                                            <Binding Path="Columns" />
+                                            <Binding Path="Rows" />
+                                            <Binding Path="MineCount" />
+                                        </MultiBinding> 
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
