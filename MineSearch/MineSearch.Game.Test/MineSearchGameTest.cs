@@ -23,19 +23,41 @@ namespace MineSearch.Game.Test
         public void TestRemoveFlag()
         {
             var cellToFlag = _game.Cells.First(cell => cell is SafeCell);
-            _game.FlagCell(cellToFlag.Coordinates);
-            _game.RemoveFlag(cellToFlag.Coordinates);
             
+            // Flagging should have succeeded.
+            Assert.IsTrue(_game.FlagCell(cellToFlag.Coordinates));
+
+            // Double check.
+            Assert.IsTrue(cellToFlag.Flagged);
+
+            // Unflagging should have succeeded.
+            Assert.IsTrue(_game.RemoveFlag(cellToFlag.Coordinates));
+
+            // Test redundant operation.
+            Assert.IsFalse(_game.RemoveFlag(cellToFlag.Coordinates));
+            
+            // Double check.
             Assert.IsFalse(cellToFlag.Flagged);
+
+            // Ensure overall game state is good.
+            Assert.IsFalse(_game.GameOver);
+            Assert.IsFalse(_game.GameWon);
         }
 
         [TestMethod]
         public void TestFlagSafeCell()
         {
             var cellToFlag = _game.Cells.First(cell => cell is SafeCell);
-            _game.FlagCell(cellToFlag.Coordinates);
+            // Flagging should have succeeded.
+            Assert.IsTrue(_game.FlagCell(cellToFlag.Coordinates));
 
+            // Test redundant operation.
+            Assert.IsFalse(_game.FlagCell(cellToFlag.Coordinates));
+
+            // Double check.
             Assert.IsTrue(cellToFlag.Flagged);
+
+            // Ensure overall game state is good.
             Assert.IsFalse(_game.GameOver);
             Assert.IsFalse(_game.GameWon);
         }
@@ -44,9 +66,16 @@ namespace MineSearch.Game.Test
         public void TestFlagMineCell()
         {
             var cellToFlag = _game.Cells.First(cell => cell is MineCell);
-            _game.FlagCell(cellToFlag.Coordinates);
+            // Flagging should have succeeded.
+            Assert.IsTrue(_game.FlagCell(cellToFlag.Coordinates));
 
+            // Test redundant operation.
+            Assert.IsFalse(_game.FlagCell(cellToFlag.Coordinates));
+
+            // Double check.
             Assert.IsTrue(cellToFlag.Flagged);
+
+            // Ensure overall game state is good.
             Assert.IsFalse(_game.GameOver);
             Assert.IsFalse(_game.GameWon);
         }
@@ -55,28 +84,58 @@ namespace MineSearch.Game.Test
         public void TestMarkCellQuestionable()
         {
             var cellToMark = _game.Cells.First(cell => cell is MineCell);
-            _game.MarkCellQuestionable(cellToMark.Coordinates);
+            // Marking should have succeeded.
+            Assert.IsTrue(_game.MarkCellQuestionable(cellToMark.Coordinates));
 
+            // Test redundant operation.
+            Assert.IsFalse(_game.MarkCellQuestionable(cellToMark.Coordinates));
+
+            // Double check.
             Assert.IsTrue(cellToMark.Questionable);
+
+            // Ensure overall game state is good.
+            Assert.IsFalse(_game.GameOver);
+            Assert.IsFalse(_game.GameWon);
         }
 
         [TestMethod]
         public void TesRemoveQuestionable()
         {
             var cellToMark = _game.Cells.First(cell => cell is MineCell);
-            _game.MarkCellQuestionable(cellToMark.Coordinates);
-            _game.RemoveQuestionable(cellToMark.Coordinates);
+            // Marking should have succeeded.
+            Assert.IsTrue(_game.MarkCellQuestionable(cellToMark.Coordinates));
 
+            // Double check.
+            Assert.IsTrue(cellToMark.Questionable);
+
+            // Unmarking should have succeeded.
+            Assert.IsTrue(_game.RemoveQuestionable(cellToMark.Coordinates));
+
+            // Test redundant operation.
+            Assert.IsFalse(_game.RemoveQuestionable(cellToMark.Coordinates));
+
+            // Double check.
             Assert.IsFalse(cellToMark.Questionable);
+
+            // Ensure overall game state is good.
+            Assert.IsFalse(_game.GameOver);
+            Assert.IsFalse(_game.GameWon);
         }
 
         [TestMethod]
         public void TestRevealSafeCell()
         {
             var cellToReveal = _game.Cells.First(cell => cell is SafeCell);
-            _game.RevealCell(cellToReveal.Coordinates);
+            // Revealing should have succeeded.
+            Assert.IsTrue(_game.RevealCell(cellToReveal.Coordinates));
 
+            // Test redundant operation.
+            Assert.IsFalse(_game.RevealCell(cellToReveal.Coordinates));
+
+            // Double check.
             Assert.IsTrue(cellToReveal.Revealed);
+
+            // Ensure overall game state is good.
             Assert.IsFalse(_game.GameOver);
             Assert.IsFalse(_game.GameWon);
         }
@@ -85,9 +144,16 @@ namespace MineSearch.Game.Test
         public void TestRevealMineCell()
         {
             var cellToReveal = _game.Cells.First(cell => cell is MineCell);
-            _game.RevealCell(cellToReveal.Coordinates);
+            // Revealing should have succeeded.
+            Assert.IsTrue(_game.RevealCell(cellToReveal.Coordinates));
 
+            // Test redundant operation.
+            Assert.IsFalse(_game.RevealCell(cellToReveal.Coordinates));
+
+            // Double check.
             Assert.IsTrue(cellToReveal.Revealed);
+
+            // Ensure overall game state is good.
             Assert.IsTrue(_game.GameOver);
             Assert.IsFalse(_game.GameWon);
         }
@@ -95,56 +161,69 @@ namespace MineSearch.Game.Test
         [TestMethod]
         public void TestWinGame()
         {
+            // Reveal all safe coordinates.
             var safeCoordinates =
                 _game.Cells.Where(cell => cell is SafeCell).Select(cell => cell.Coordinates);
             foreach (var coordinate in safeCoordinates)
             {
-                _game.RevealCell(coordinate);
+                Assert.IsTrue(_game.RevealCell(coordinate));
             }
 
+            // Ensure all mine cells are flagged.
+            foreach (var mineCell in _game.Cells.Where(cell => cell is MineCell))
+            {
+                Assert.IsTrue(mineCell.Flagged);
+            }
+
+            // Double check remaining mine count is good.
+            Assert.AreEqual(0, _game.RemainingMineCount);
+
+            // Ensure overall game state is good.
             Assert.IsTrue(_game.GameOver);
             Assert.IsTrue(_game.GameWon);
         }
 
         [TestMethod]
-        public void TestRemainingFlagCount()
+        public void TestRemainingMineCount()
         {
-            int expectedFlagCount = _game.MineCount;
-            Assert.AreEqual(expectedFlagCount, _game.RemainingFlagCount);
+            int expectedMineCount = _game.MineCount;
+            Assert.AreEqual(expectedMineCount, _game.RemainingMineCount);
 
             var safeCoordinates = _game.Cells.
                     Where(cell => cell is SafeCell).
                     Select(cell => cell.Coordinates).
-                    Take(_game.MineCount).
                     ToList();
+
             // Flag safe cells
             foreach (var coordinate in safeCoordinates)
             {
-                _game.FlagCell(coordinate);
-                expectedFlagCount--;
-                Assert.AreEqual(expectedFlagCount, _game.RemainingFlagCount);
+                Assert.IsTrue(_game.FlagCell(coordinate));
+                expectedMineCount--;
+                Assert.AreEqual(expectedMineCount, _game.RemainingMineCount);
             }
-            Assert.AreEqual(0, expectedFlagCount);
-            Assert.AreEqual(0, _game.RemainingFlagCount);
+
             // Remove flags
             foreach (var coordinate in safeCoordinates)
             {
-                _game.RemoveFlag(coordinate);
-                expectedFlagCount++;
-                Assert.AreEqual(expectedFlagCount, _game.RemainingFlagCount);
+                Assert.IsTrue(_game.RemoveFlag(coordinate));
+                expectedMineCount++;
+                Assert.AreEqual(expectedMineCount, _game.RemainingMineCount);
             }
-            Assert.AreEqual(_game.MineCount, expectedFlagCount);
-            Assert.AreEqual(_game.MineCount, _game.RemainingFlagCount);
+
+            Assert.AreEqual(_game.MineCount, expectedMineCount);
+            Assert.AreEqual(_game.MineCount, _game.RemainingMineCount);
         }
 
         [TestMethod]
         public void TestFlagRevealedCell()
         {
             var cell = _game.Cells.First(c => c is SafeCell);
-            _game.RevealCell(cell.Coordinates);
+            Assert.IsTrue(_game.RevealCell(cell.Coordinates));
 
-            _game.FlagCell(cell.Coordinates);
+            // Should have failed.
+            Assert.IsFalse(_game.FlagCell(cell.Coordinates));
 
+            // Double check.
             Assert.IsFalse(cell.Flagged);
         }
 
@@ -152,10 +231,12 @@ namespace MineSearch.Game.Test
         public void TestRevealFlaggedSafeCell()
         {
             var cell = _game.Cells.First(c => c is SafeCell);
-            _game.FlagCell(cell.Coordinates);
+            Assert.IsTrue(_game.FlagCell(cell.Coordinates));
 
-            _game.RevealCell(cell.Coordinates);
+            // Should have failed.
+            Assert.IsFalse(_game.RevealCell(cell.Coordinates));
 
+            // Double check.
             Assert.IsFalse(cell.Revealed);
         }
 
@@ -163,10 +244,12 @@ namespace MineSearch.Game.Test
         public void TestRevealFlaggedMineCell()
         {
             var cell = _game.Cells.First(c => c is MineCell);
-            _game.FlagCell(cell.Coordinates);
+            Assert.IsTrue(_game.FlagCell(cell.Coordinates));
 
-            _game.RevealCell(cell.Coordinates);
+            // Should have failed.
+            Assert.IsFalse(_game.RevealCell(cell.Coordinates));
 
+            // Double check.
             Assert.IsFalse(cell.Revealed);
         }
 
@@ -177,7 +260,7 @@ namespace MineSearch.Game.Test
             var explosionSourceCell = mineCells.First() as MineCell;
             Assert.IsNotNull(explosionSourceCell);
 
-            _game.RevealCell(explosionSourceCell.Coordinates);
+            Assert.IsTrue(_game.RevealCell(explosionSourceCell.Coordinates));
 
             Assert.IsTrue(explosionSourceCell.ExplosionSource);
 

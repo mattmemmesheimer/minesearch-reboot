@@ -28,16 +28,16 @@ namespace MineSearch.Game
         public int MineCount { get { return Cells.Count(cell => cell is MineCell); } }
 
         /// <summary>
-        /// Number of flags remaining.
+        /// Number of mines remaining.
         /// </summary>
-        public int RemainingFlagCount
+        public int RemainingMineCount
         {
-            get { return _remainingFlagCount; }
+            get { return _remainingMineCount; }
             private set
             {
-                if (value != _remainingFlagCount)
+                if (value != _remainingMineCount)
                 {
-                    _remainingFlagCount = value;
+                    _remainingMineCount = value;
                     OnPropertyChanged();
                 }
             }
@@ -54,7 +54,12 @@ namespace MineSearch.Game
                 if (!_gameOver && value)
                 {
                     _gameOver = true;
-                    if (!GameWon)
+                    // Handle game outcome
+                    if (GameWon)
+                    {
+                        WinGame();
+                    }
+                    else
                     {
                         LoseGame();
                     }
@@ -76,12 +81,16 @@ namespace MineSearch.Game
 
         #endregion
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="gameSettings">Settings used for this game.</param>
         public MineSearchGame(IGameSettings gameSettings)
         {
             var cellsFactory = new MineSearchCellsFactory(gameSettings);
             Cells = cellsFactory.CreateCells();
-            RemainingFlagCount = gameSettings.MineCount;
-            _remainingCellsToReveal = Cells.Count(cell => cell is SafeCell);
+            RemainingMineCount = gameSettings.MineCount;
+            _remainingCellsToReveal = Cells.Size - gameSettings.MineCount;
         }
 
         /// <summary>
@@ -92,14 +101,14 @@ namespace MineSearch.Game
         public bool FlagCell(Point point)
         {
             var cell = Cells[point.X, point.Y];
-            if (GameOver || cell == null)
+            if (cell != null && !cell.Revealed && !cell.Flagged)
             {
-                return false;
-            }
-            if (!cell.Revealed && !cell.Flagged)
-            {
+                // Be sure to unmark it as questionable.
+                // This cell may have been in that state and then
+                // automatically flagged at the end of the game.
+                cell.Questionable = false;
                 cell.Flagged = true;
-                RemainingFlagCount--;
+                RemainingMineCount--;
                 return true;
             }
             return false;
@@ -109,47 +118,57 @@ namespace MineSearch.Game
         /// Removes a flag from a cell.
         /// </summary>
         /// <param name="point">Coordinates of cell to remove flag from.</param>
-        public void RemoveFlag(Point point)
+        /// <returns>True if the cell has been unflagged, false otherwise.</returns>
+        public bool RemoveFlag(Point point)
         {
             var cell = Cells[point.X, point.Y];
             if (cell != null && cell.Flagged)
             {
-                RemainingFlagCount++;
+                RemainingMineCount++;
                 cell.Flagged = false;
+                return true;
             }
+            return false;
         }
 
         /// <summary>
         /// Marks a cell as questionable.
         /// </summary>
         /// <param name="point">Coordinates of cell to mark as questionable.</param>
-        public void MarkCellQuestionable(Point point)
+        /// <returns>True if the cell has been marked questionable, false otherwise.</returns>
+        public bool MarkCellQuestionable(Point point)
         {
             var cell = Cells[point.X, point.Y];
-            if (cell != null)
+            if (cell != null && !cell.Revealed && !cell.Questionable)
             {
                 cell.Questionable = true;
+                return true;
             }
+            return false;
         }
 
         /// <summary>
         /// Removes the questionable state from a cell.
         /// </summary>
         /// <param name="point">Coordinates of cell to remove questionable state from.</param>
-        public void RemoveQuestionable(Point point)
+        /// <returns>True if the cell has been unmarked questionable, false otherwise.</returns>
+        public bool RemoveQuestionable(Point point)
         {
             var cell = Cells[point.X, point.Y];
-            if (cell != null)
+            if (cell != null && cell.Questionable)
             {
                 cell.Questionable = false;
+                return true;
             }
+            return false;
         }
 
         /// <summary>
         /// Reveals a cell.
         /// </summary>
         /// <param name="point">Coordinates of cell to reveal.</param>
-        public void RevealCell(Point point)
+        /// <returns>True if the cell has been revealed, false otherwise.</returns>
+        public bool RevealCell(Point point)
         {
             var cell = Cells[point.X, point.Y];
             if (cell != null && !cell.Revealed && !cell.Flagged)
@@ -174,7 +193,9 @@ namespace MineSearch.Game
                         GameOver = true;
                     }
                 }
+                return true;
             }
+            return false;
         }
 
         /// <summary>
@@ -203,16 +224,26 @@ namespace MineSearch.Game
 
         private void LoseGame()
         {
+            // When game is lost, we reveal all mine cells.
             foreach (var cell in Cells.Where(cell => cell is MineCell))
             {
                 RevealCell(cell.Coordinates);
             }
         }
 
+        private void WinGame()
+        {
+            // When game is won, we flag all mine cells.
+            foreach (var cell in Cells.Where(cell => cell is MineCell))
+            {
+                FlagCell(cell.Coordinates);
+            }
+        }
+
         #region Fields
 
         private bool _gameOver;
-        private int _remainingFlagCount;
+        private int _remainingMineCount;
         private int _remainingCellsToReveal;
 
         #endregion
