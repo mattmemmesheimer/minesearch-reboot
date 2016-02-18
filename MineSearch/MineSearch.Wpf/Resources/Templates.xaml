@@ -1,0 +1,50 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:models="clr-namespace:MineSearch.Wpf.Models">
+
+    <DataTemplate
+        x:Key="GameSettingTemplate"
+        DataType="models:GameSetting">
+        <Grid Height="60">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <RadioButton 
+                Grid.Column="0"
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Margin="2"
+                IsChecked="{Binding Selected, Mode=TwoWay}"
+                Command="{Binding ElementName=SettingsWindow, Path=ViewModel.SelectGameSettingCommand}"
+                CommandParameter="{Binding}" />
+            <TextBlock
+                Grid.Column="1"
+                Grid.Row="0"
+                Text="{Binding Name}">
+                <TextBlock.InputBindings>
+                    <MouseBinding
+                        MouseAction="LeftClick" 
+                        Command="{Binding ElementName=SettingsWindow, Path=ViewModel.SelectGameSettingCommand}"
+                        CommandParameter="{Binding}" />
+                </TextBlock.InputBindings>
+            </TextBlock>
+            <TextBlock
+                Grid.Column="1"
+                Grid.Row="1">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}X{1}, {2} mines">
+                        <Binding Path="Columns" />
+                        <Binding Path="Rows" />
+                        <Binding Path="MineCount" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </Grid>
+    </DataTemplate>
+    
+</ResourceDictionary>
