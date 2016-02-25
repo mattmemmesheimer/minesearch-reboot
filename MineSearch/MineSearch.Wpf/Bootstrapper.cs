@@ -20,7 +20,6 @@ namespace MineSearch.Wpf
         protected override void ConfigureContainer()
         {
             base.ConfigureContainer();
-            Container.RegisterType<MainWindow>();
             Container.RegisterType<IPointGenerator, RandomPointGenerator>();
         }
     }
