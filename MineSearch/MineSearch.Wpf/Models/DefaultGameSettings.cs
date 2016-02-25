@@ -37,6 +37,11 @@ namespace MineSearch.Wpf.Models
                 new GameSetting(16, 30, 99, DefaultGenerator)
                 {
                     Name = "Expert"
+                },
+                new GameSetting(20, 30, 145, DefaultGenerator)
+                {
+                    Name = "Custom",
+                    Custom = true
                 }
             };
         }
