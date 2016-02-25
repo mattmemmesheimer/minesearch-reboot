@@ -5,7 +5,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Style.xaml" />
-                <ResourceDictionary Source="Resources/Templates.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DigitalDisplay.Wpf;component/Resources/Digits.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
