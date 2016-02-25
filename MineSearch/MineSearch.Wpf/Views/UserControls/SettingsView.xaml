@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:models="clr-namespace:MineSearch.Wpf.Models"
              mc:Ignorable="d"
-             Name="SettingsWindow"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -13,17 +12,53 @@
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid>
-                <ItemsControl 
-                    ItemsSource="{Binding DefaultGameSettings}"
-                    ItemTemplate="{StaticResource GameSettingTemplate}">
-                </ItemsControl>
-            </Grid>
+            <DataGrid
+                ItemsSource="{Binding DefaultGameSettings}"
+                AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="models:GameSetting">
+                                <RadioButton IsChecked="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" GroupName="Settings" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Binding="{Binding Name}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="IsEnabled" Value="False" />
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn 
+                        Header="Rows"
+                        Binding="{Binding Rows}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="IsEnabled" Value="{Binding Custom}" />
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn 
+                        Header="Columns"
+                        Binding="{Binding Columns}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="IsEnabled" Value="{Binding Custom}" />
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn 
+                        Header="Mines"
+                        Binding="{Binding MineCount}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="IsEnabled" Value="{Binding Custom}" />
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
