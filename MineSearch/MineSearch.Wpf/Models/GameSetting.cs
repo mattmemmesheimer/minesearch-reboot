@@ -31,6 +31,9 @@ namespace MineSearch.Wpf.Models
             }
         }
 
+        /// <summary>
+        /// Whether or not this is a custom game setting.
+        /// </summary>
         public bool Custom { get; set; }
 
         #endregion
