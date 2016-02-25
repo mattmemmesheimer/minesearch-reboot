@@ -50,9 +50,9 @@ namespace MineSearch.Wpf.ViewModels
         {
             // Create the default game settings
             DefaultGameSettings = new DefaultGameSettings();
+            // Use the first game setting
             var defaultGameSetting = DefaultGameSettings.First();
             defaultGameSetting.Selected = true;
-            // Use the first game setting
             GameViewModel = new MineSearchGameViewModel(defaultGameSetting);
 
             SettingsRequest = new InteractionRequest<SettingsViewModel>();
