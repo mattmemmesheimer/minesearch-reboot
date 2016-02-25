@@ -31,6 +31,8 @@ namespace MineSearch.Wpf.Models
             }
         }
 
+        public bool Custom { get; set; }
+
         #endregion
 
         /// <summary>
