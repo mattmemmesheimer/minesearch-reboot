@@ -66,7 +66,12 @@ namespace MineSearch.Wpf.ViewModels
         /// <summary>
         /// Default game settings.
         /// </summary>
-        public DefaultGameSettings DefaultGameSettings { get; private set; } 
+        public DefaultGameSettings DefaultGameSettings { get; private set; }
+
+        /// <summary>
+        /// Whether or not to use the questionable state.
+        /// </summary>
+        public bool UseQuestionableState { get; set; }
 
         #endregion
 
@@ -79,6 +84,8 @@ namespace MineSearch.Wpf.ViewModels
             Content = Title = "";
 
             DefaultGameSettings = defaultGameSettings;
+            SelectedGameSetting = DefaultGameSettings.First(s => s.Selected);
+            UseQuestionableState = SelectedGameSetting.UseQuestionableState;
 
             SaveCommand = new DelegateCommand(Save);
             CancelCommand = new DelegateCommand(Cancel);
@@ -88,6 +95,7 @@ namespace MineSearch.Wpf.ViewModels
         private void Save()
         {
             SelectedGameSetting = DefaultGameSettings.First(s => s.Selected);
+            SelectedGameSetting.UseQuestionableState = UseQuestionableState;
             Saved = true;
             FinishInteraction();
         }
